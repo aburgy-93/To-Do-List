@@ -140,7 +140,24 @@ ion-icon {
 .listBTN {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   font-size: 1.5rem;
+}
+
+.left-panel {
+  display: flex;
+}
+
+.left-panel > p {
+  margin-top: -0.3rem;
+}
+
+.right-panel {
+  visibility: hidden;
+}
+
+.listBTN:hover .right-panel {
+  visibility: visible;
 }
 
 .addBTN {
@@ -174,10 +191,6 @@ ion-icon {
   margin-bottom: 0.8rem;
   font-size: 1.4rem;
   background-color: #fafafa;
-}
-
-.left-panel {
-  display: flex;
 }
 
 .add {

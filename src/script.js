@@ -102,7 +102,7 @@ addProjectBtn.addEventListener("click", function () {
   addProject.classList.remove("hidden");
 });
 
-///////////////////////storage//////////////////////////
+/////////////////////// storage & list arrary //////////////////////////
 
 // initalize empty projects arr
 let projectArr = [];
@@ -123,30 +123,62 @@ const addLocalStorage = function () {
 const saveListsAndRender = function () {
   localStorage.setItem("lists", JSON.stringify(projectArr));
   renderLists();
+  console.log(projectArr);
 };
 
 // displays the list names
 const renderLists = function () {
   projectList.textContent = "";
-  const markup = projectArr.map((b) => _generateMarkup(b.name));
+  projectArr.map((b, index) => _generateMarkup(b.name, index));
+};
+
+const _generateMarkup = function (input, index) {
+  const markup = `
+    <button class="btn listBTN " id=${index}>
+      <div class="left-panel">
+        <ion-icon name="list"></ion-icon>
+        <p>${input}</p>
+      </div>
+
+      <div class="right-panel">
+        <div class="image">
+          <ion-icon [ngClass]="something" name="close"></ion-icon>
+        </div>
+      </div>
+    </button>
+  `;
+
+  // insert markup;
   projectList.insertAdjacentHTML("afterbegin", markup);
 };
 
-const _generateMarkup = function (input) {
-  return `
-  <button class="btn listBTN ">
-  <ion-icon name="list"></ion-icon>
-  <p>${input}</p>
-  </button>
-  `;
-};
-
 // deletes a list item, need to put it to a button/event listener
+
+const projectsList = document.querySelector(".projectsList");
+
+projectsList.addEventListener("click", function (e) {
+  const target = e.target.closest(".image");
+
+  if (!target) return;
+
+  // get id of target el, delete it (gotta be a better way for this)
+  const id = target.parentNode.parentNode.id;
+  deleteList(id);
+});
+
 const deleteList = function (index) {
   projectArr.splice(index, 1);
   saveListsAndRender();
 };
 
+let listBtn = document.querySelectorAll(".listBTN");
+
+projectList.addEventListener("click", function (e) {
+  const clicked = e.target.closest(".listBTN");
+
+  if (!clicked) return;
+  listBtn.forEach((b) => b.classList.remove("clicked"));
+  clicked.classList.add("clicked");
+});
+
 addLocalStorage();
-// deleteList(0);
-console.log(projectArr);
