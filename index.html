@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style/style.css" />
     <link rel="stylesheet" href="style/general.css" />
+    <script type="module" defer src="src/controller.js"></script>
     <script type="module" defer src="src/script.js"></script>
     <title>To-Do List</title>
   </head>
@@ -57,24 +58,14 @@
         <div
           class="inbox tasklist tasklist__content--1 tasklist__tab tasklist__tab--active"
         >
-          <h1 class="projectTitle">Inbox</h1>
-          <div class="tasks-list">
-            <!-- <button class="task-button">
-              <div class="left-panel">
-                <ion-icon name="ellipse-outline"></ion-icon>
-                <p class="task-content">Eggs</p>
-              </div>
-              <div class="right-panel">
-                <p class="due-date">No date</p>
-              </div>
-            </button> -->
-          </div>
+          <h1 class="taskTitle">Inbox</h1>
+          <ul class="tasks-list"></ul>
           <button class="add">
             <ion-icon name="add"></ion-icon>
             <p>Add Task</p>
           </button>
 
-          <div class="project-preview hidden">
+          <div class="task-preview hidden">
             <input type="text" class="input" />
 
             <div class="add-item-buttons">
@@ -141,8 +132,8 @@
         </div>
 
         <div class="newProject projectlist">
-          <h1 class="projectTitle">Test List</h1>
-          <div class="tasks-list">
+          <h1 class="projectTitle">${name}</h1>
+          <ul class="tasks-list">
             <button class="task-button">
               <div class="left-panel">
                 <ion-icon name="ellipse-outline"></ion-icon>
@@ -152,22 +143,24 @@
                 <p class="due-date">No date</p>
               </div>
             </button>
-          </div>
-          <button class="add">
+          </ul>
+          <button class="add-new-list-item">
             <ion-icon name="add"></ion-icon>
             <p>Add Task</p>
           </button>
-
-          <div class="project-preview hidden">
+    
+          <div class="task-preview hidden">
             <input type="text" class="input" />
-
-            <div class="add-item-buttons">
+    
+            <div class="add-task-buttons">
               <button class="add-item">Add</button>
               <button class="cancel">Cancel</button>
             </div>
           </div>
-        </div> -->
-      </div>
+        </div>
+      </div> -->
+
+      
     </main>
     <script
       type="module"

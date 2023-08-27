@@ -3,7 +3,7 @@ import Project from "./project.js";
 
 /////////////////////event listeners///////////////////////////
 const addTaskBtn = document.querySelector(".add");
-const addTaskPopUp = document.querySelector(".project-preview");
+const addTaskPopUp = document.querySelector(".task-preview");
 const addTaskPopUpBtn = document.querySelector(".add-item");
 const addTaskPopUpCnl = document.querySelector(".cancel");
 
@@ -13,6 +13,8 @@ const tasksList = document.querySelector(".tasks-list");
 let taskItem = document.querySelectorAll(".taskItem");
 const taskMenu = document.querySelector(".tasks");
 let taskLists = document.querySelectorAll(".tasklist");
+const toDoList = document.querySelector(".todoList");
+const projectsList = document.querySelector(".projectsList");
 
 //////////////////////////////////////////////////////////////////
 const addProject = document.querySelector(".addBTN");
@@ -21,6 +23,7 @@ const addProjectBtn = document.querySelector(".add-project-btn");
 const cancelProjectBtn = document.querySelector(".project-cancel");
 const projectName = document.querySelector(".project-input");
 const projectList = document.querySelector(".projectsList");
+
 //remove hidden class from input to add task//
 addTaskBtn.addEventListener("click", function () {
   addTaskBtn.classList.add("hidden");
@@ -31,8 +34,6 @@ addProject.addEventListener("click", function () {
   addProject.classList.add("hidden");
   addProjectPopUp.classList.remove("hidden");
 });
-
-// Need to make DRY //////////////////////////////////////////////////////////////
 
 // add hidden class to input after add task //
 addTaskPopUpBtn.addEventListener("click", function () {
@@ -75,7 +76,7 @@ cancelProjectBtn.addEventListener("click", function () {
   addProject.classList.remove("hidden");
 });
 
-//////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
 document.addEventListener("DOMContentLoaded", function (e) {
   document.getElementById("inboxBtn").classList.add("clicked");
@@ -89,7 +90,7 @@ taskMenu.addEventListener("click", function (e) {
   clicked.classList.add("clicked");
 });
 
-/////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
 addProjectBtn.addEventListener("click", function () {
   // get ipnut value from input field
@@ -104,15 +105,6 @@ addProjectBtn.addEventListener("click", function () {
 
 /////////////////////// storage & list arrary //////////////////////////
 
-// initalize empty projects arr
-let projectArr = [];
-
-// create new list object
-const createNewList = function (name) {
-  projectArr.push(new Project(name));
-  saveListsAndRender();
-};
-
 // gets the key (lists) or an [], so it can be updated
 const addLocalStorage = function () {
   projectArr = JSON.parse(localStorage.getItem("lists")) || [];
@@ -126,12 +118,24 @@ const saveListsAndRender = function () {
   console.log(projectArr);
 };
 
+////////////////////////////Project Init & UI/////////////////////////////
+
+// initalize empty projects arr
+let projectArr = [];
+
+// create new list object
+const createNewList = function (name) {
+  projectArr.push(new Project(name));
+  saveListsAndRender();
+};
+
 // displays the list names
 const renderLists = function () {
   projectList.textContent = "";
   projectArr.map((b, index) => _generateMarkup(b.name, index));
 };
 
+// dynamic generation of project btn
 const _generateMarkup = function (input, index) {
   const markup = `
     <button class="btn listBTN " id=${index}>
@@ -154,8 +158,7 @@ const _generateMarkup = function (input, index) {
 
 // deletes a list item, need to put it to a button/event listener
 
-const projectsList = document.querySelector(".projectsList");
-
+// event listener for delete function
 projectsList.addEventListener("click", function (e) {
   const target = e.target.closest(".image");
 
@@ -166,19 +169,86 @@ projectsList.addEventListener("click", function (e) {
   deleteList(id);
 });
 
+// delete project list from project arr
 const deleteList = function (index) {
   projectArr.splice(index, 1);
   saveListsAndRender();
 };
 
-let listBtn = document.querySelectorAll(".listBTN");
+const _filterList = function (id) {
+  Project.render(projectArr[id].name);
+};
 
+// display project UI
+// const _generateMarkupProject = function (name) {
+//   const markup = `
+//     <div class="newProject projectlist">
+//       <h1 class="projectTitle">${name}</h1>
+//       <ul class="tasks-list">
+//         <!-- <button class="task-button">
+//           <div class="left-panel">
+//             <ion-icon name="ellipse-outline"></ion-icon>
+//             <p class="task-content">Eggs</p>
+//           </div>
+//           <div class="right-panel">
+//             <p class="due-date">No date</p>
+//           </div>
+//         </button> -->
+//       </ul>
+//       <button class="add-new-list-item">
+//         <ion-icon name="add"></ion-icon>
+//         <p>Add Task</p>
+//       </button>
+
+//       <div class="task-preview hidden">
+//         <input type="text" class="task-input" />
+
+//         <div class="add-task-buttons">
+//           <button class="add-item">Add</button>
+//           <button class="cancel">Cancel</button>
+//         </div>
+//       </div>
+//     </div>
+//   `;
+
+//   toDoList.textContent = " ";
+//   toDoList.insertAdjacentHTML("afterbegin", markup);
+// };
+
+// btn clicked, changes class to "clicked", removes previous clicked, display UI
 projectList.addEventListener("click", function (e) {
+  let listBtn = document.querySelectorAll(".listBTN");
   const clicked = e.target.closest(".listBTN");
+  const id = clicked.id;
 
   if (!clicked) return;
   listBtn.forEach((b) => b.classList.remove("clicked"));
   clicked.classList.add("clicked");
+
+  _filterList(id);
 });
+
+// toDoList.addEventListener("click", function (e) {
+//   const clicked = e.target.closest(".add-new-list-item");
+
+//   if (!clicked) return;
+//   console.log(clicked);
+//   clicked.classList.add("hidden");
+//   taskPreview.classList.remove("hidden");
+
+//   add.addEventListener("click", function () {
+//     const taskValue = taskInput.value;
+//     console.log("Item Added", taskValue);
+//     taskInput.value = " ";
+
+//     // clicked.classList.remove("hidden");
+//     // taskPreview.classList.add("hidden");
+//   });
+
+//   canel.addEventListener("click", function () {
+//     clicked.classList.remove("hidden");
+//     taskPreview.classList.add("hidden");
+//   });
+// });
 
 addLocalStorage();

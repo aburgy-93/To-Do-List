@@ -179,9 +179,10 @@ ion-icon {
   display: grid;
 }
 
+.taskTitle,
 .projectTitle {
   padding: 0rem 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
 }
 
 .task-button {
@@ -193,10 +194,11 @@ ion-icon {
   background-color: #fafafa;
 }
 
-.add {
+.add,
+.add-new-list-item {
   display: flex;
   padding: 0.8rem 0rem;
-  margin-top: 1rem;
+  /* margin-top: 1rem; */
   text-align: left;
   background-color: #f3f3f3;
   font-size: 1.4rem;
@@ -204,14 +206,16 @@ ion-icon {
 }
 
 .input,
-.project-input {
+.project-input,
+.task-input {
   width: 100%;
   margin-bottom: 1rem;
   border: 1px solid #aaa;
   border-radius: 5px;
   padding: 1rem;
 }
-.add-item-buttons {
+.add-item-buttons,
+.add-task-buttons {
   display: flex;
 }
 
@@ -254,9 +258,8 @@ ion-icon {
   font-weight: 600;
 }
 
-.projectlist {
-  display: none;
-}
+/* .projectlist {
+} */
 
 .projectlist__content--active {
   display: grid;
