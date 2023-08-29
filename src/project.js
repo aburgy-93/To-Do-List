@@ -1,9 +1,8 @@
-class Project {
+export default class Project {
   constructor(name) {
     this.name = name;
     this.tasks = [];
   }
-
   _parentElement = document.querySelector(".todoList");
 
   setName(name) {
@@ -18,6 +17,10 @@ class Project {
     return this.tasks;
   }
 
+  test(id) {
+    console.log(id);
+  }
+
   render(id) {
     const markup = this._generateMarkupProject(id);
     this._parentElement.textContent = " ";
@@ -27,9 +30,10 @@ class Project {
   addHandlerAddListItem(handler) {
     this._parentElement.addEventListener("click", function (e) {
       const clicked = e.target.closest(".add-new-list-item");
+      const taskPreview = document.querySelector(".task-preview");
 
       if (!clicked) return;
-      handler(clicked);
+      handler(clicked, taskPreview);
     });
   }
 
@@ -65,5 +69,3 @@ class Project {
     `;
   }
 }
-
-export default new Project();
