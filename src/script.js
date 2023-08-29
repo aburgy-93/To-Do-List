@@ -1,6 +1,4 @@
-import UI from "./UI.js";
 import Project from "./project.js";
-
 /////////////////////event listeners///////////////////////////
 const addTaskBtn = document.querySelector(".add");
 const addTaskPopUp = document.querySelector(".task-preview");
@@ -118,7 +116,7 @@ const saveListsAndRender = function () {
   console.log(projectArr);
 };
 
-////////////////////////////Project Init & UI/////////////////////////////
+////////////////////////////Project Module & UI/////////////////////////////
 
 // initalize empty projects arr
 let projectArr = [];
@@ -128,6 +126,8 @@ const createNewList = function (name) {
   projectArr.push(new Project(name));
   saveListsAndRender();
 };
+
+//////////////////////////////////////////////////////////////////////////////////
 
 // displays the list names
 const renderLists = function () {
@@ -156,6 +156,7 @@ const _generateMarkup = function (input, index) {
   projectList.insertAdjacentHTML("afterbegin", markup);
 };
 
+/*
 // deletes a list item, need to put it to a button/event listener
 
 // event listener for delete function
@@ -179,42 +180,6 @@ const _filterList = function (id) {
   Project.render(projectArr[id].name);
 };
 
-// display project UI
-// const _generateMarkupProject = function (name) {
-//   const markup = `
-//     <div class="newProject projectlist">
-//       <h1 class="projectTitle">${name}</h1>
-//       <ul class="tasks-list">
-//         <!-- <button class="task-button">
-//           <div class="left-panel">
-//             <ion-icon name="ellipse-outline"></ion-icon>
-//             <p class="task-content">Eggs</p>
-//           </div>
-//           <div class="right-panel">
-//             <p class="due-date">No date</p>
-//           </div>
-//         </button> -->
-//       </ul>
-//       <button class="add-new-list-item">
-//         <ion-icon name="add"></ion-icon>
-//         <p>Add Task</p>
-//       </button>
-
-//       <div class="task-preview hidden">
-//         <input type="text" class="task-input" />
-
-//         <div class="add-task-buttons">
-//           <button class="add-item">Add</button>
-//           <button class="cancel">Cancel</button>
-//         </div>
-//       </div>
-//     </div>
-//   `;
-
-//   toDoList.textContent = " ";
-//   toDoList.insertAdjacentHTML("afterbegin", markup);
-// };
-
 // btn clicked, changes class to "clicked", removes previous clicked, display UI
 projectList.addEventListener("click", function (e) {
   let listBtn = document.querySelectorAll(".listBTN");
@@ -227,28 +192,5 @@ projectList.addEventListener("click", function (e) {
 
   _filterList(id);
 });
-
-// toDoList.addEventListener("click", function (e) {
-//   const clicked = e.target.closest(".add-new-list-item");
-
-//   if (!clicked) return;
-//   console.log(clicked);
-//   clicked.classList.add("hidden");
-//   taskPreview.classList.remove("hidden");
-
-//   add.addEventListener("click", function () {
-//     const taskValue = taskInput.value;
-//     console.log("Item Added", taskValue);
-//     taskInput.value = " ";
-
-//     // clicked.classList.remove("hidden");
-//     // taskPreview.classList.add("hidden");
-//   });
-
-//   canel.addEventListener("click", function () {
-//     clicked.classList.remove("hidden");
-//     taskPreview.classList.add("hidden");
-//   });
-// });
-
+*/
 addLocalStorage();
