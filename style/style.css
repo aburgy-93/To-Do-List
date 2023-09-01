@@ -207,7 +207,8 @@ ion-icon {
 
 .input,
 .project-input,
-.task-input {
+.task-input,
+.task-input-box {
   width: 100%;
   margin-bottom: 1rem;
   border: 1px solid #aaa;
@@ -219,24 +220,17 @@ ion-icon {
   display: flex;
 }
 
-.add-item {
+.add-item,
+.add-project-btn,
+.add-task-btn {
   margin-right: 0.8rem;
   border: 1px solid #99dd99;
   background-color: #aaffaa;
 }
 
-.cancel {
-  border: 1px solid #eeadad;
-  background-color: #ffbebe;
-}
-
-.add-project-btn {
-  margin-right: 0.8rem;
-  border: 1px solid #99dd99;
-  background-color: #aaffaa;
-}
-
-.project-cancel {
+.cancel,
+.project-cancel,
+.cancel-btn {
   border: 1px solid #eeadad;
   background-color: #ffbebe;
 }

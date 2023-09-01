@@ -1,4 +1,5 @@
 import Project from "./project.js";
+import Task from "./task.js";
 /////////////////////event listeners///////////////////////////
 const addTaskBtn = document.querySelector(".add");
 const addTaskPopUp = document.querySelector(".task-preview");
@@ -23,6 +24,7 @@ const projectName = document.querySelector(".project-input");
 const projectList = document.querySelector(".projectsList");
 
 //remove hidden class from input to add task//
+
 addTaskBtn.addEventListener("click", function () {
   addTaskBtn.classList.add("hidden");
   addTaskPopUp.classList.remove("hidden");
@@ -112,7 +114,7 @@ const addLocalStorage = function () {
 // updates the local storage with the updated project arr
 const saveListsAndRender = function () {
   localStorage.setItem("lists", JSON.stringify(projectArr));
-  renderLists();
+  renderProjectBtn();
   console.log(projectArr);
 };
 
@@ -127,16 +129,27 @@ const createNewList = function (name) {
   saveListsAndRender();
 };
 
+const createNewTask = function (name, index) {
+  const item = new Task(name);
+  // push task into correct task array
+  // 1) need to know what list
+  const { tasks } = projectArr[index];
+  // 2) pust task to list
+  tasks.push(item);
+  // 3) save data to local storage
+  saveListsAndRender();
+};
+
 //////////////////////////////////////////////////////////////////////////////////
 
 // displays the list names
-const renderLists = function () {
+const renderProjectBtn = function () {
   projectList.textContent = "";
-  projectArr.map((b, index) => _generateMarkup(b.name, index));
+  projectArr.map((b, index) => _generateMarkupProjectsButton(b.name, index));
 };
 
-// dynamic generation of project btn
-const _generateMarkup = function (input, index) {
+// dynamic generation of project btn w/ name
+const _generateMarkupProjectsButton = function (input, index) {
   const markup = `
     <button class="btn listBTN " id=${index}>
       <div class="left-panel">
@@ -156,9 +169,75 @@ const _generateMarkup = function (input, index) {
   projectList.insertAdjacentHTML("afterbegin", markup);
 };
 
-const _filterList = function (id) {
-  Project.test();
+// gets the project from the projectArr via it's id, render the markup to parent element
+const renderList = function (id) {
+  const _parentElement = document.querySelector(".todoList");
+  const { name } = projectArr[id];
+
+  const markup = _generateMarkupProject(name);
+  _parentElement.textContent = " ";
+  _parentElement.insertAdjacentHTML("afterbegin", markup);
+
+  const add = document.querySelector(".add-new-list-item");
+  const taskInput = document.querySelector(".input-task");
+  const addTaskBtn = document.querySelector(".add-task-btn");
+  const taskCancelBtn = document.querySelector(".cancel-btn");
+  add.addEventListener("click", function () {
+    add.classList.add("hidden");
+    taskInput.classList.remove("hidden");
+  });
+
+  const resetTaskInput = function () {
+    add.classList.remove("hidden");
+    taskInput.classList.add("hidden");
+  };
+
+  addTaskBtn.addEventListener("click", function () {
+    const input = document.querySelector(".task-input-box");
+    createNewTask(input.value, id);
+    input.value = " ";
+    resetTaskInput();
+  });
+
+  taskCancelBtn.addEventListener("click", function () {
+    resetTaskInput();
+  });
 };
+
+// displays the UI of the project
+const _generateMarkupProject = function (name) {
+  return `
+    <div class="newProject projectlist">
+      <h1 class="projectTitle">${name}</h1>
+      <ul class="tasks-list">
+        <!-- <button class="task-button">
+          <div class="left-panel">
+            <ion-icon name="ellipse-outline"></ion-icon>
+            <p class="task-content">Eggs</p>
+          </div>
+          <div class="right-panel">
+            <p class="due-date">No date</p>
+          </div>
+        </button> -->
+      </ul>
+      <button class="add-new-list-item">
+        <ion-icon name="add"></ion-icon>
+        <p>Add Task</p>
+      </button>
+
+      <div class="input-task hidden">
+        <input type="text" class="task-input-box" />
+
+        <div class="add-task-buttons">
+          <button class="add-task-btn">Add</button>
+          <button class="cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+////////////////////////////////////////////////////////////////////
 
 // btn clicked, changes class to "clicked", removes previous clicked, display UI
 projectList.addEventListener("click", function (e) {
@@ -170,10 +249,9 @@ projectList.addEventListener("click", function (e) {
   listBtn.forEach((b) => b.classList.remove("clicked"));
   clicked.classList.add("clicked");
 
-  _filterList(id);
+  renderList(id);
 });
 
-/*
 // deletes a list item, need to put it to a button/event listener
 
 // event listener for delete function
@@ -183,7 +261,7 @@ projectsList.addEventListener("click", function (e) {
   if (!target) return;
 
   // get id of target el, delete it (gotta be a better way for this)
-  const id = target.parentNode.parentNode.id;
+  const { id } = target.parentNode.parentNode;
   deleteList(id);
 });
 
@@ -193,8 +271,4 @@ const deleteList = function (index) {
   saveListsAndRender();
 };
 
-
-
-/
-*/
 addLocalStorage();
