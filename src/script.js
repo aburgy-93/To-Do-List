@@ -5,16 +5,13 @@ const addTaskBtn = document.querySelector(".add");
 const addTaskPopUp = document.querySelector(".task-preview");
 const addTaskPopUpBtn = document.querySelector(".add-item");
 const addTaskPopUpCnl = document.querySelector(".cancel");
-
 //////////////////////////////////////////////
 const input = document.querySelector(".input");
-const tasksList = document.querySelector(".tasks-list");
 let taskItem = document.querySelectorAll(".taskItem");
 const taskMenu = document.querySelector(".tasks");
-let taskLists = document.querySelectorAll(".tasklist");
+const taskLists = document.querySelectorAll(".tasklist");
 const toDoList = document.querySelector(".todoList");
 const projectsList = document.querySelector(".projectsList");
-
 //////////////////////////////////////////////////////////////////
 const addProject = document.querySelector(".addBTN");
 const addProjectPopUp = document.querySelector(".add-project-preview");
@@ -23,7 +20,7 @@ const cancelProjectBtn = document.querySelector(".project-cancel");
 const projectName = document.querySelector(".project-input");
 const projectList = document.querySelector(".projectsList");
 
-//remove hidden class from input to add task//
+//remove hidden class from input to add task (For the INBOX)/////////////////////////////////////////
 
 addTaskBtn.addEventListener("click", function () {
   addTaskBtn.classList.add("hidden");
@@ -44,7 +41,7 @@ addTaskPopUpBtn.addEventListener("click", function () {
   const markup = _generateMarkupAddTask(inputValue);
   // insert marukup into task list
 
-  tasksList.insertAdjacentHTML("afterbegin", markup);
+  taskLists.insertAdjacentHTML("afterbegin", markup);
 
   addTaskPopUp.classList.add("hidden");
   input.value = "";
@@ -76,8 +73,6 @@ cancelProjectBtn.addEventListener("click", function () {
   addProject.classList.remove("hidden");
 });
 
-////////////////////////////////////////////////////////////////////////////
-
 document.addEventListener("DOMContentLoaded", function (e) {
   document.getElementById("inboxBtn").classList.add("clicked");
 });
@@ -90,18 +85,7 @@ taskMenu.addEventListener("click", function (e) {
   clicked.classList.add("clicked");
 });
 
-////////////////////////////////////////////////////////////////////////////
-
-addProjectBtn.addEventListener("click", function () {
-  // get ipnut value from input field
-  let inputValue = projectName.value;
-  // create a new project
-  createNewList(inputValue);
-
-  addProjectPopUp.classList.add("hidden");
-  projectName.value = "";
-  addProject.classList.remove("hidden");
-});
+//////////////////////////////(ABOVE FOR INBOX, Finish Later)////////////////////////////////////////
 
 /////////////////////// storage & list arrary //////////////////////////
 
@@ -115,20 +99,35 @@ const addLocalStorage = function () {
 const saveListsAndRender = function () {
   localStorage.setItem("lists", JSON.stringify(projectArr));
   renderProjectBtn();
-  console.log(projectArr);
 };
-
-////////////////////////////Project Module & UI/////////////////////////////
 
 // initalize empty projects arr
 let projectArr = [];
 
+////////////////////////////Project Module & UI/////////////////////////////
+
+// after clicking "+ Add Project" btn, click event for "add" btn
+addProjectBtn.addEventListener("click", function () {
+  // get ipnut value from input field
+  let inputValue = projectName.value;
+
+  // create a new project
+  createNewList(inputValue);
+
+  addProjectPopUp.classList.add("hidden");
+  projectName.value = "";
+  addProject.classList.remove("hidden");
+});
+
 // create new list object
 const createNewList = function (name) {
+  // pushes new Project w/name to projectArr.
   projectArr.push(new Project(name));
+  // saves the array to local storage and renders it onto the page
   saveListsAndRender();
 };
 
+// creates a new task
 const createNewTask = function (name, index) {
   const item = new Task(name);
   // push task into correct task array
@@ -142,7 +141,7 @@ const createNewTask = function (name, index) {
 
 //////////////////////////////////////////////////////////////////////////////////
 
-// displays the list names
+// displays the list names from local storage
 const renderProjectBtn = function () {
   projectList.textContent = "";
   projectArr.map((b, index) => _generateMarkupProjectsButton(b.name, index));
@@ -156,7 +155,6 @@ const _generateMarkupProjectsButton = function (input, index) {
         <ion-icon name="list"></ion-icon>
         <p>${input}</p>
       </div>
-
       <div class="right-panel">
         <div class="image">
           <ion-icon [ngClass]="something" name="close"></ion-icon>
@@ -172,40 +170,65 @@ const _generateMarkupProjectsButton = function (input, index) {
 // gets the project from the projectArr via it's id, render the markup to parent element
 const renderList = function (id) {
   const _parentElement = document.querySelector(".todoList");
+  const projectId = id;
   const { name } = projectArr[id];
+  const { tasks } = projectArr[id];
 
-  const markup = _generateMarkupProject(name);
+  const markup = _generateMarkupProject(name, tasks);
   _parentElement.textContent = " ";
   _parentElement.insertAdjacentHTML("afterbegin", markup);
 
-  const add = document.querySelector(".add-new-list-item");
-  const taskInput = document.querySelector(".input-task");
-  const addTaskBtn = document.querySelector(".add-task-btn");
+  const addTask = document.querySelector(".add-new-list-item");
   const taskCancelBtn = document.querySelector(".cancel-btn");
-  add.addEventListener("click", function () {
-    add.classList.add("hidden");
-    taskInput.classList.remove("hidden");
-  });
+  const taskInput = document.querySelector(".input-task");
+  const addTaskToListBtn = document.querySelector(".add-task-btn");
+  const tasksList = document.querySelector(".tasks-list");
 
   const resetTaskInput = function () {
-    add.classList.remove("hidden");
+    addTask.classList.remove("hidden");
     taskInput.classList.add("hidden");
   };
 
-  addTaskBtn.addEventListener("click", function () {
-    const input = document.querySelector(".task-input-box");
-    createNewTask(input.value, id);
-    input.value = " ";
-    resetTaskInput();
+  addTask.addEventListener("click", function () {
+    addTask.classList.add("hidden");
+    taskInput.classList.remove("hidden");
   });
 
   taskCancelBtn.addEventListener("click", function () {
     resetTaskInput();
   });
+
+  addTaskToListBtn.addEventListener("click", () => {
+    renderTaskToList(id, tasks);
+    resetTaskInput();
+  });
+
+  // delete tasks button, not re-rendering list on click
+  tasksList.addEventListener("click", function (e) {
+    const target = e.target.closest(".image");
+    console.log(projectId);
+    if (!target) return;
+    console.log(target);
+    const { id } = target.parentNode.parentNode;
+    console.log(id);
+
+    // need id of the list we are deleting from
+    deleteTask(tasks, id, projectId);
+  });
+};
+
+const renderTaskToList = function (id, tasks) {
+  const input = document.querySelector(".task-input-box");
+  createNewTask(input.value, id);
+  input.value = " ";
+  generateProjectTasksMarkup(tasks);
+
+  // re-render the list
+  renderList(id);
 };
 
 // displays the UI of the project
-const _generateMarkupProject = function (name) {
+const _generateMarkupProject = function (name, tasks) {
   return `
     <div class="newProject projectlist">
       <h1 class="projectTitle">${name}</h1>
@@ -219,6 +242,7 @@ const _generateMarkupProject = function (name) {
             <p class="due-date">No date</p>
           </div>
         </button> -->
+        ${tasks.map(generateProjectTasksMarkup).join("")}
       </ul>
       <button class="add-new-list-item">
         <ion-icon name="add"></ion-icon>
@@ -234,6 +258,25 @@ const _generateMarkupProject = function (name) {
         </div>
       </div>
     </div>
+  `;
+};
+
+// displays the lits items
+
+const generateProjectTasksMarkup = function (task, index) {
+  return `
+    <button class="task-button" id="${index}">
+      <div class="left-panel">
+        <ion-icon name="ellipse-outline"></ion-icon>
+        <p class="task-content">${task.name}</p>
+      </div>
+      <div class="right-panel">
+        <p class="due-date">No date</p>
+         <div class="image">
+          <ion-icon [ngClass]="something" name="close"></ion-icon>
+        </div>
+      </div>
+    </button>
   `;
 };
 
@@ -269,6 +312,13 @@ projectsList.addEventListener("click", function (e) {
 const deleteList = function (index) {
   projectArr.splice(index, 1);
   saveListsAndRender();
+};
+
+const deleteTask = function (tasks, id, project) {
+  console.log(id, project);
+  tasks.splice(tasks[id], 1);
+  saveListsAndRender();
+  renderList(project);
 };
 
 addLocalStorage();

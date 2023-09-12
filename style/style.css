@@ -160,6 +160,10 @@ ion-icon {
   visibility: visible;
 }
 
+.task-button:hover .right-panel {
+  visibility: visible;
+}
+
 .addBTN {
   display: flex;
   font-size: 1.5rem;
